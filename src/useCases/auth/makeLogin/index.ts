@@ -17,20 +17,35 @@ export default ({ userDAO, authService }: MakeLoginDependencies) => {
     try {
       const { email, password } = httpRequest.body as PostLoginBody;
 
-      const user = await userDAO.findByEmail(email);
-
-      if (!user) {
+      if (!email || !password) {
         return {
-          statusCode: 401,
+          statusCode: 400,
           body: {
-            error: 'Invalid credentials'
+            error: "Invalid request body"
           }
         }
       }
+
+      const user = await userDAO.findByEmail(email);
+
+      const isValid = user !== null && (await authService.comparePasswords(password, user.password));
+
+      if (!isValid) {
+        return {
+          statusCode: 401,
+          body: {
+            error: "Invalid credentials"
+          }
+        }
+      }
+
+      const token = await authService.login(user.id, user.email)
       
       return {
         statusCode: 200,
-        body: {}
+        body: {
+          token: token
+        }
       }
     } catch (error: any) {
       console.error(error);

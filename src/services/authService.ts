@@ -1,3 +1,4 @@
+import { EncryptService } from '@services/encryptService';
 import jwt from 'jsonwebtoken';
 
 interface DecodedToken {
@@ -8,10 +9,15 @@ interface DecodedToken {
 
 export interface AuthService {
   login: (id: string, email: string) => Promise<string>
+  comparePasswords: (password: string, hashedPassword: string) => Promise<boolean>
   me: (token: string) => Promise<string>
 }
 
-export default (): AuthService => {
+interface AuthServiceDependencies {
+  encryptService: EncryptService
+}
+
+export default ({ encryptService }: AuthServiceDependencies): AuthService => {
   async function login (id: string, email: string) {
     return jwt.sign({ user_id: id, email }, process.env.JWT_SECRET)
   }
@@ -21,8 +27,13 @@ export default (): AuthService => {
     return decoded.user_id
   }
 
+  async function comparePasswords (password: string, hashedPassword: string) {
+    return encryptService.compare(password, hashedPassword)
+  }
+
   return Object.freeze({
     login,
-    me
+    me,
+    comparePasswords
   })
 }

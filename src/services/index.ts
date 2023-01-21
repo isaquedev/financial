@@ -1,6 +1,8 @@
 import makeAuthService from "./authService";
+import makeEncryptService from "./encryptService";
 
-const authService = makeAuthService();
+const encryptService = makeEncryptService();
+const authService = makeAuthService({ encryptService });
 
 export {
   authService
