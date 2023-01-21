@@ -1,8 +1,10 @@
-import { userDB } from "@dataAccess/index";
+import { userDAO } from "@dataAccess/index";
 import makeLogin from "./makeLogin";
+import { authService } from "@services/index";
 
 const postLogin = makeLogin({
-  userDB
+  userDAO,
+  authService,
 })
 
 export {

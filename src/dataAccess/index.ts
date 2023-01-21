@@ -1,15 +1,15 @@
 import prisma from "../database";
 
-import makeEntryDB from "./makeEntryDB";
-import makeUserDB from "./makeUserDB";
-import makeWalletDB from "./makeWalletDB";
+import makeEntryDAO from "./makeEntryDAO";
+import makeUserDAO from "./makeUserDAO";
+import makeWalletDAO from "./makeWalletDAO";
 
-const entryDB = makeEntryDB(prisma)
-const userDB = makeUserDB(prisma)
-const walletDB = makeWalletDB(prisma)
+const entryDAO = makeEntryDAO(prisma)
+const userDAO = makeUserDAO(prisma)
+const walletDAO = makeWalletDAO(prisma)
 
 export {
-  entryDB,
-  userDB,
-  walletDB
+  entryDAO,
+  userDAO,
+  walletDAO
 }

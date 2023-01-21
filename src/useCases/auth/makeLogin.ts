@@ -1,14 +1,32 @@
 import { HttpRequest, HttpResponse } from "@adapters/routeAdapter";
-import { UserDAO } from "@dataAccess/makeUserDB";
+import { UserDAO } from "@dataAccess/makeUserDAO";
+import { AuthService } from "@services/authService";
 
-interface MakeLogin {
-  userDAO: UserDAO
+interface MakeLoginDependencies {
+  userDAO: UserDAO,
+  authService: AuthService
 }
 
-export default ({ userDAO }: MakeLogin) => {
+interface PostLoginBody {
+  email: string,
+  password: string
+}
+
+export default ({ userDAO, authService }: MakeLoginDependencies) => {
   return async function postLogin(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const { email, password } = httpRequest.body;
+      const { email, password } = httpRequest.body as PostLoginBody;
+
+      const user = await userDAO.findByEmail(email);
+
+      if (!user) {
+        return {
+          statusCode: 401,
+          body: {
+            error: 'Invalid credentials'
+          }
+        }
+      }
       
       return {
         statusCode: 200,
