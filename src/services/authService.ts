@@ -8,7 +8,7 @@ interface DecodedToken {
 }
 
 export interface AuthService {
-  login: (id: string, email: string) => Promise<string>
+  login: (id: number, email: string) => Promise<string>
   hashPassword: (password: string) => Promise<string>
   comparePasswords: (password: string, hashedPassword: string) => Promise<boolean>
   me: (token: string) => Promise<string>
@@ -19,7 +19,7 @@ interface AuthServiceDependencies {
 }
 
 export default ({ encryptService }: AuthServiceDependencies): AuthService => {
-  async function login (id: string, email: string) {
+  async function login (id: number, email: string) {
     return jwt.sign({ user_id: id, email }, process.env.JWT_SECRET)
   }
 
