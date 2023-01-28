@@ -4,6 +4,7 @@ import validator from "@validations/validator";
 
 import makeLogin from "./makeLogin";
 import makeRegister from "./makeRegister";
+import makeWhoAmI from "./makeWhoAmI";
 
 const postLogin = makeLogin({
   userDAO,
@@ -16,7 +17,12 @@ const postRegister = makeRegister({
   validator
 })
 
+const getWhoAmI = makeWhoAmI({
+  userDAO,
+})
+
 export {
   postLogin,
-  postRegister
+  postRegister,
+  getWhoAmI,
 }

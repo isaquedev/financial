@@ -3,15 +3,14 @@ import jwt from 'jsonwebtoken';
 
 interface DecodedToken {
   iat: number
-  user_id: string
-  email: string
+  userId: number
 }
 
 export interface AuthService {
   login: (id: number, email: string) => Promise<string>
   hashPassword: (password: string) => Promise<string>
   comparePasswords: (password: string, hashedPassword: string) => Promise<boolean>
-  me: (token: string) => Promise<string>
+  verifyToken: (token: string) => Promise<number>
 }
 
 interface AuthServiceDependencies {
@@ -20,12 +19,12 @@ interface AuthServiceDependencies {
 
 export default ({ encryptService }: AuthServiceDependencies): AuthService => {
   async function login (id: number, email: string) {
-    return jwt.sign({ user_id: id, email }, process.env.JWT_SECRET)
+    return jwt.sign({ userId: id, email }, process.env.JWT_SECRET)
   }
 
-  async function me (token: string) {
+  async function verifyToken (token: string) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken
-    return decoded.user_id
+    return decoded.userId
   }
 
   async function hashPassword (password: string) {
@@ -38,7 +37,7 @@ export default ({ encryptService }: AuthServiceDependencies): AuthService => {
 
   return Object.freeze({
     login,
-    me,
+    verifyToken,
     hashPassword,
     comparePasswords
   })

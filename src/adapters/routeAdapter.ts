@@ -1,6 +1,7 @@
-import { Request, Response } from "express"
+import { HttpUserRequest } from "@middlewares/makeIsAuthenticated"
+import { NextFunction, Request, Response } from "express"
 
-type Controller = (request: HttpRequest) => Promise<HttpResponse>
+type Controller = (request: HttpUserRequest, next?: HttpNextFunction) => Promise<HttpResponse>
 
 export interface HttpRequest {
   body: any
@@ -9,15 +10,17 @@ export interface HttpRequest {
   params: any
 }
 
-export type IHttpRoute = (request: HttpRequest) => Promise<HttpResponse>
-
 export interface HttpResponse {
   statusCode: number
   body?: Object
 }
 
-export default (controller: Controller) => async (req: Request, res: Response) => {
-  const httpsResponse = await controller(req)
+export type HttpNextFunction = (error?: Error) => void
+
+export default (controller: Controller) => async (req: Request, res: Response, next: NextFunction) => {
+  req.headers = req.headers || {}
+  
+  const httpsResponse = await controller(req, next)
 
   if (httpsResponse.body) {
     return res.status(httpsResponse.statusCode).json(httpsResponse.body)

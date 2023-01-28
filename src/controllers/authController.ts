@@ -1,8 +1,10 @@
 
 import { HttpRequest } from "@adapters/routeAdapter";
-import { postLogin, postRegister } from "@useCases/auth";
+import { HttpUserRequest } from "@middlewares/makeIsAuthenticated";
+import { getWhoAmI, postLogin, postRegister } from "@useCases/auth";
 
 export default Object.freeze({
   login: (request: HttpRequest) => postLogin(request),
-  register: async (request: HttpRequest) => postRegister(request)
+  register: (request: HttpRequest) => postRegister(request),
+  whoAmI: (request: HttpUserRequest) => getWhoAmI(request)
 })
