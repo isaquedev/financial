@@ -9,6 +9,7 @@ interface DecodedToken {
 
 export interface AuthService {
   login: (id: string, email: string) => Promise<string>
+  hashPassword: (password: string) => Promise<string>
   comparePasswords: (password: string, hashedPassword: string) => Promise<boolean>
   me: (token: string) => Promise<string>
 }
@@ -27,6 +28,10 @@ export default ({ encryptService }: AuthServiceDependencies): AuthService => {
     return decoded.user_id
   }
 
+  async function hashPassword (password: string) {
+    return encryptService.hash(password)
+  }
+
   async function comparePasswords (password: string, hashedPassword: string) {
     return encryptService.compare(password, hashedPassword)
   }
@@ -34,6 +39,7 @@ export default ({ encryptService }: AuthServiceDependencies): AuthService => {
   return Object.freeze({
     login,
     me,
+    hashPassword,
     comparePasswords
   })
 }

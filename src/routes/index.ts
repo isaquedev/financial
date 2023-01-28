@@ -1,4 +1,4 @@
-import { Router, IRouter } from 'express';
+import { IRouter } from 'express';
 
 import auth from './auth';
 import entries from './entries';
