@@ -23,6 +23,17 @@ export default ({ walletDAO, validator }: MakeWalletUpdateDependecies) => {
       const { name } = httpRequest.body as PutWalletUpdateBody;
       const { id: walletId } = httpRequest.params as PutWalletUpdateParams;
 
+      const wallet = await walletDAO.findOneOfUser(walletId, userId);
+
+      if (!wallet) {
+        return {
+          statusCode: 404,
+          body: {
+            message: "Wallet not found"
+          }
+        }
+      }
+
       const errors = validator<PutWalletUpdateBody>(httpRequest.body, {
         name: { name: "Nome", type: "string", required: true, min: 3, max: 255 },
       })
@@ -33,17 +44,6 @@ export default ({ walletDAO, validator }: MakeWalletUpdateDependecies) => {
           body: {
             message: "Invalid request body",
             error: errors
-          }
-        }
-      }
-
-      const wallet = await walletDAO.findOne(walletId);
-
-      if (!wallet || wallet.userId !== userId) {
-        return {
-          statusCode: 404,
-          body: {
-            message: "Wallet not found"
           }
         }
       }
