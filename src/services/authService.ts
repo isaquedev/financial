@@ -3,14 +3,14 @@ import jwt from 'jsonwebtoken';
 
 interface DecodedToken {
   iat: number
-  userId: number
+  userId: string
 }
 
 export interface AuthService {
-  login: (id: number, email: string) => Promise<string>
+  login: (id: string, email: string) => Promise<string>
   hashPassword: (password: string) => Promise<string>
   comparePasswords: (password: string, hashedPassword: string) => Promise<boolean>
-  verifyToken: (token: string) => Promise<number>
+  verifyToken: (token: string) => Promise<string>
 }
 
 interface AuthServiceDependencies {
@@ -18,7 +18,7 @@ interface AuthServiceDependencies {
 }
 
 export default ({ encryptService }: AuthServiceDependencies): AuthService => {
-  async function login (id: number, email: string) {
+  async function login (id: string, email: string) {
     return jwt.sign({ userId: id, email }, process.env.JWT_SECRET)
   }
 

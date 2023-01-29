@@ -1,6 +1,6 @@
 import { PrismaClient, User } from "@prisma/client"
 
-interface UserModel extends Omit<User, "password"> {
+interface UserWithoutPassword extends Omit<User, "password"> {
   password?: string;
 }
 
@@ -11,9 +11,9 @@ type UserCreate = {
 }
 
 export interface  UserDAO {
-  findOne(id: number): Promise<UserModel|null>
-  findByEmail(email: string): Promise<UserModel|null>
-  create(data: UserCreate): Promise<UserModel>
+  findOne(id: string): Promise<UserWithoutPassword|null>
+  findByEmail(email: string, withPassword?: boolean): Promise<User|UserWithoutPassword|null>
+  create(data: UserCreate): Promise<UserWithoutPassword>
 }
 
 function exclude<User, Key extends keyof User>(
@@ -30,7 +30,7 @@ function exclude<User, Key extends keyof User>(
 }
 
 export default (client: PrismaClient): UserDAO => {
-  async function findOne(id: number) {
+  async function findOne(id: string) {
     const user = await client.user.findUnique({
       where: { id }
     })
@@ -38,10 +38,14 @@ export default (client: PrismaClient): UserDAO => {
     return exclude(user, ["password"])
   }
 
-  async function findByEmail(email: string) {
+  async function findByEmail(email: string, withPassword?: boolean) {
     const user = await client.user.findUnique({
       where: { email }
     })
+
+    if (withPassword) {
+      return user
+    }
 
     return exclude(user, ["password"])
   }

@@ -3,7 +3,7 @@ import { HttpNextFunction, HttpRequest } from "@adapters/routeAdapter";
 import { AuthService } from "@services/authService";
 
 export interface HttpUserRequest extends HttpRequest {
-  userId?: number
+  userId?: string
 }
 
 interface MakeIsAuthenticatedDependencies {

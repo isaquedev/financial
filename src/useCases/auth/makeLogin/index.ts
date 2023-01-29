@@ -26,9 +26,9 @@ export default ({ userDAO, authService }: MakeLoginDependencies) => {
         }
       }
 
-      const user = await userDAO.findByEmail(email);
+      const user = await userDAO.findByEmail(email, true);
 
-      const isValid = user !== null && (await authService.comparePasswords(password, user.password));
+      const isValid = user !== null && (await authService.comparePasswords(password, user.password!));
 
       if (!isValid) {
         return {
