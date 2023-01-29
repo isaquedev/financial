@@ -1,4 +1,4 @@
-import { userDAO } from "@dataAccess/index";
+import { userDAO, walletDAO } from "@dataAccess/index";
 import { authService } from "@services/index";
 import validator from "@validations/validator";
 
@@ -13,6 +13,7 @@ const postLogin = makeLogin({
 
 const postRegister = makeRegister({
   userDAO,
+  walletDAO,
   authService,
   validator
 })

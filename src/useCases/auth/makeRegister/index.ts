@@ -1,10 +1,12 @@
 import { HttpRequest, HttpResponse } from "@adapters/routeAdapter";
 import { UserDAO } from "@dataAccess/makeUserDAO";
+import { WalletDAO } from "@dataAccess/makeWalletDAO";
 import { AuthService } from "@services/authService";
 import { Validator } from "validations/validator";
 
 interface MakeRegisterDependencies {
   userDAO: UserDAO
+  walletDAO: WalletDAO
   authService: AuthService
   validator: Validator
 }
@@ -15,7 +17,7 @@ interface PostRegisterBody {
   password: string
 }
 
-export default ({ userDAO, authService, validator }: MakeRegisterDependencies) => {
+export default ({ userDAO, walletDAO, authService, validator }: MakeRegisterDependencies) => {
   return async function postRegister(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { name, email, password } = httpRequest.body as PostRegisterBody;
@@ -54,6 +56,11 @@ export default ({ userDAO, authService, validator }: MakeRegisterDependencies) =
         name,
         email,
         password: hashedPassword,
+      })
+
+      await walletDAO.create({
+        name: "Minha carteira",
+        userId: newUser.id
       })
 
       const token = await authService.login(newUser.id, newUser.email)
