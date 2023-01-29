@@ -8,6 +8,7 @@ export interface WalletDAO {
   findOne(id: string): Promise<Wallet|null>
   findOneOfUser(id: string, userId: string): Promise<Wallet|null>
   findAll(userId: string): Promise<Wallet[]>
+  countAll(userId: string): Promise<number>
   create(data: WalletCreate): Promise<Wallet>
   update(id: string, data: WalletUpdate): Promise<Wallet|null>
   remove(id: string): Promise<Wallet|null>
@@ -37,6 +38,12 @@ export default (client: PrismaClient): WalletDAO => {
     })
   }
 
+  async function countAll(userId: string) {
+    return await client.wallet.count({
+      where: { userId }
+    })
+  }
+
   async function create(data: WalletCreate) {
     return await client.wallet.create({
       data
@@ -60,6 +67,7 @@ export default (client: PrismaClient): WalletDAO => {
     findOne,
     findOneOfUser,
     findAll,
+    countAll,
     create,
     update,
     remove
