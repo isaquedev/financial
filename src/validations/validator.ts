@@ -8,7 +8,7 @@ import {
 type DataTypes = 'string' | 'number' | 'boolean' | 'date'
 type ValidationTypes = 'email' | 'password'
 
-type Validation<T> = {
+export type Validation<T> = {
   [key in keyof T]: {
     name: string
     required?: boolean

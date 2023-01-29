@@ -1,11 +1,13 @@
 import { HttpResponse } from "@adapters/routeAdapter";
 import { WalletDAO } from "@dataAccess/makeWalletDAO";
 import { HttpUserRequest } from "@middlewares/makeIsAuthenticated";
+import { WalletChangeValidation } from "@models/wallet";
 import { Validator } from "@validations/validator";
 
 interface MakeWalletUpdateDependecies {
   walletDAO: WalletDAO
   validator: Validator
+  validationRules: WalletChangeValidation
 }
 
 interface PutWalletUpdateParams {
@@ -16,7 +18,7 @@ interface PutWalletUpdateBody {
   name: string
 }
 
-export default ({ walletDAO, validator }: MakeWalletUpdateDependecies) => {
+export default ({ walletDAO, validator, validationRules }: MakeWalletUpdateDependecies) => {
   return async function putWalletUpdate(httpRequest: HttpUserRequest): Promise<HttpResponse> {
     try {
       const userId = httpRequest.userId!;
@@ -34,9 +36,7 @@ export default ({ walletDAO, validator }: MakeWalletUpdateDependecies) => {
         }
       }
 
-      const errors = validator<PutWalletUpdateBody>(httpRequest.body, {
-        name: { name: "Nome", type: "string", required: true, min: 3, max: 255 },
-      })
+      const errors = validator<PutWalletUpdateBody>(httpRequest.body, validationRules)
 
       if (errors) {
         return {

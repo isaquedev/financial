@@ -5,6 +5,7 @@ import makeWalletList from "./makeWalletList";
 import makeWalletCreate from "./makeWalletCreate";
 import makeWalletUpdate from "./makeWalletUpdate";
 import makeWalletRemove from "./makeWalletRemove";
+import { walletValidations } from "@models/wallet";
 
 const getWalletList = makeWalletList({
   walletDAO
@@ -12,12 +13,14 @@ const getWalletList = makeWalletList({
 
 const postWalletCreate = makeWalletCreate({
   walletDAO,
-  validator: validator
+  validator: validator,
+  validationRules: walletValidations.changeValidation
 })
 
 const putWalletUpdate = makeWalletUpdate({
   walletDAO,
-  validator: validator
+  validator: validator,
+  validationRules: walletValidations.changeValidation
 })
 
 const deleteWalletRemove = makeWalletRemove({

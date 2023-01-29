@@ -1,26 +1,26 @@
 import { HttpResponse } from "@adapters/routeAdapter";
 import { WalletDAO } from "@dataAccess/makeWalletDAO";
 import { HttpUserRequest } from "@middlewares/makeIsAuthenticated";
+import { WalletChangeValidation } from "@models/wallet";
 import { Validator } from "@validations/validator";
 
 interface MakeWalletCreateDependecies {
   walletDAO: WalletDAO
-  validator: Validator
+  validator: Validator,
+  validationRules: WalletChangeValidation
 }
 
 interface PostWalletCreateBody {
   name: string
 }
 
-export default ({ walletDAO, validator }: MakeWalletCreateDependecies) => {
+export default ({ walletDAO, validator, validationRules }: MakeWalletCreateDependecies) => {
   return async function postWalletCreate(httpRequest: HttpUserRequest): Promise<HttpResponse> {
     try {
       const userId = httpRequest.userId!;
       const { name } = httpRequest.body as PostWalletCreateBody;
 
-      const errors = validator<PostWalletCreateBody>(httpRequest.body, {
-        name: { name: "Nome", type: "string", required: true, min: 3, max: 255 },
-      })
+      const errors = validator<PostWalletCreateBody>(httpRequest.body, validationRules)
 
       if (errors) {
         return {
