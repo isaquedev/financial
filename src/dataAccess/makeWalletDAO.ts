@@ -2,7 +2,7 @@ import { Wallet, PrismaClient } from "@prisma/client"
 
 interface WalletCreate extends Omit<Wallet, "id"|"createdAt"|"updatedAt"> {}
 
-interface WalletUpdate extends Omit<Wallet, "createdAt"> {}
+interface WalletUpdate extends Omit<Wallet, "id"|"createdAt"|"updatedAt"|"userId"> {}
 
 export interface WalletDAO {
   findOne(id: string): Promise<Wallet|null>

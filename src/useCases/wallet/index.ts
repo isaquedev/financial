@@ -1,8 +1,9 @@
 import { walletDAO } from "@dataAccess/index";
+import validator from "@validations/validator";
 
 import makeWalletList from "./makeWalletList";
 import makeWalletCreate from "./makeWalletCreate";
-import validator from "@validations/validator";
+import makeWalletUpdate from "./makeWalletUpdate";
 
 const getWalletList = makeWalletList({
   walletDAO
@@ -13,7 +14,13 @@ const postWalletCreate = makeWalletCreate({
   validator: validator
 })
 
+const putWalletUpdate = makeWalletUpdate({
+  walletDAO,
+  validator: validator
+})
+
 export {
   getWalletList,
-  postWalletCreate
+  postWalletCreate,
+  putWalletUpdate
 }
