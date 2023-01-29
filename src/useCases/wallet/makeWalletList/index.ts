@@ -2,11 +2,11 @@ import { HttpResponse } from "@adapters/routeAdapter";
 import { WalletDAO } from "@dataAccess/makeWalletDAO";
 import { HttpUserRequest } from "@middlewares/makeIsAuthenticated";
 
-interface MakeLoginDependencies {
+interface MakeWalletListDependecies {
   walletDAO: WalletDAO
 }
 
-export default ({ walletDAO }: MakeLoginDependencies) => {
+export default ({ walletDAO }: MakeWalletListDependecies) => {
   return async function getWalletList(httpRequest: HttpUserRequest): Promise<HttpResponse> {
     try {
       const userId = httpRequest.userId!;

@@ -3,7 +3,7 @@ import { WalletDAO } from "@dataAccess/makeWalletDAO";
 import { HttpUserRequest } from "@middlewares/makeIsAuthenticated";
 import { Validator } from "@validations/validator";
 
-interface MakeLoginDependencies {
+interface MakeWalletCreateDependecies {
   walletDAO: WalletDAO
   validator: Validator
 }
@@ -12,7 +12,7 @@ interface PostWalletCreateBody {
   name: string
 }
 
-export default ({ walletDAO, validator }: MakeLoginDependencies) => {
+export default ({ walletDAO, validator }: MakeWalletCreateDependecies) => {
   return async function postWalletCreate(httpRequest: HttpUserRequest): Promise<HttpResponse> {
     try {
       const userId = httpRequest.userId!;
