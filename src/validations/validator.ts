@@ -88,12 +88,6 @@ export default <T>(data: T, keys: Validation<T>): Errors | undefined => {
             }
             break;
           case 'password':
-            if (!minLengthValidation(String(_data), 8)) {
-              errors[key].push(`${name} must be at least 8 characters long`);
-            }
-            if (!maxLengthValidation(String(_data), 128)) {
-              errors[key].push(`${name} must be at most 128 characters long`);
-            }
             if (!hasAtLeastOneLowerCase(String(_data))) {
               errors[key].push(`${name} must contain at least one lower case character`);
             }

@@ -3,7 +3,7 @@ import { UserDAO } from "@dataAccess/makeUserDAO";
 import { AuthService } from "@services/authService";
 
 interface MakeLoginDependencies {
-  userDAO: UserDAO,
+  userDAO: UserDAO
   authService: AuthService
 }
 
@@ -16,15 +16,6 @@ export default ({ userDAO, authService }: MakeLoginDependencies) => {
   return async function postLogin(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { email, password } = httpRequest.body as PostLoginBody;
-
-      if (!email || !password) {
-        return {
-          statusCode: 400,
-          body: {
-            error: "Invalid request body"
-          }
-        }
-      }
 
       const user = await userDAO.findByEmail(email, true);
 
