@@ -12,7 +12,7 @@ export interface EntryDAO {
   findOne(id: string): Promise<EntryObject|null>
   findOneOfUser(id: string, userId: string): Promise<EntryObject|null>
   findAll(userId: string): Promise<EntryObject[]>
-  findAllOfWallet(walletId: string, userId: string): Promise<EntryObject[]>
+  findAllOfWallet(walletId: string): Promise<EntryObject[]>
   create(data: EntryCreate): Promise<EntryObject>
   update(id: string, data: EntryUpdate): Promise<EntryObject>
   remove(id: string): Promise<EntryObject>
@@ -64,14 +64,9 @@ export default (client: PrismaClient): EntryDAO => {
     return entries.map(parseEntry)
   }
 
-  async function findAllOfWallet(walletId: string, userId: string): Promise<EntryObject[]> {
+  async function findAllOfWallet(walletId: string): Promise<EntryObject[]> {
     const entries = await client.entry.findMany({
-      where: {
-        AND: [
-          { walletId },
-          { userId }
-        ]
-      }
+      where: { walletId }
     })
 
     return entries.map(parseEntry)

@@ -1,8 +1,9 @@
-import { deleteWalletRemove, getWalletList, postWalletCreate, putWalletUpdate } from "@useCases/wallet";
+import { deleteWalletRemove, getWalletEntriesList, getWalletList, postWalletCreate, putWalletUpdate } from "@useCases/wallet";
 import { HttpRequest } from "../adapters/routeAdapter";
 
 export default Object.freeze({
   getAll: (request: HttpRequest) => getWalletList(request),
+  getAllEntries: (request: HttpRequest) => getWalletEntriesList(request),
   create: (request: HttpRequest) => postWalletCreate(request),
   update: (request: HttpRequest) => putWalletUpdate(request),
   remove: (request: HttpRequest) => deleteWalletRemove(request),
