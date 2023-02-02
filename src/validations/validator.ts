@@ -5,7 +5,7 @@ import {
   maxLengthValidation, minLengthValidation
 } from "./validationTypes";
 
-type DataTypes = 'string' | 'number' | 'boolean' | 'date'
+type DataTypes = 'string' | 'number' | 'boolean' | 'date' | 'enum' | 'integer'
 type ValidationTypes = 'email' | 'password'
 
 export type Validation<T> = {
@@ -16,6 +16,7 @@ export type Validation<T> = {
     validations?: ValidationTypes[]
     min?: number
     max?: number
+    enum?: string[]
   }
 };
 
@@ -55,6 +56,14 @@ export default <T>(data: T, keys: Validation<T>): Errors | undefined => {
         case 'date':
           if (isNaN(Date.parse(String(_data)))) {
             errors[key].push(`${name} is not a valid date`);
+          }
+        case 'enum':
+          if (!keys[key as keyof T].enum?.includes(String(_data))) {
+            errors[key].push(`${name} is not a valid`);
+          }
+        case 'integer':
+          if (isNaN(Number(_data)) || !Number.isInteger(Number(_data))) {
+            errors[key].push(`${name} is not a valid integer`);
           }
           break;
       }
