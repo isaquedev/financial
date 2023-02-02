@@ -13,7 +13,7 @@ export interface EntryDAO {
   findOne(id: string): Promise<EntryObject|null>
   findOneOfUser(id: string, userId: string): Promise<EntryObject|null>
   findAll(userId: string): Promise<EntryObject[]>
-  findAllPaginated(userId: string, paginate: Pagination): Promise<EntryObject[]>
+  findAllPaginated(userId: string, paginate: Pagination, date: string): Promise<EntryObject[]>
   findAllOfWallet(walletId: string): Promise<EntryObject[]>
   count: (userId: string) => Promise<number>
   create(data: EntryCreate): Promise<EntryObject>
@@ -67,9 +67,22 @@ export default (client: PrismaClient): EntryDAO => {
     return entries.map(parseEntry)
   }
 
-  async function findAllPaginated(userId: string, pagination: Pagination): Promise<EntryObject[]> {
+  async function findAllPaginated(userId: string, pagination: Pagination, date: string): Promise<EntryObject[]> {
+    const _date = new Date(date)
+    const nextDay = new Date(date)
+    nextDay.setDate(nextDay.getDate() + 1)
+
     const entries = await client.entry.findMany({
-      where: { userId },
+      where: {
+        AND: [
+          { userId },
+          { date: {
+              gte: _date, 
+              lt: nextDay
+            }
+          }
+        ]
+      },
       skip: pagination.page * pagination.perPage,
       take: pagination.perPage
     })
