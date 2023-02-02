@@ -16,6 +16,17 @@ export default ({ walletDAO }: MakeWalletCreateDependecies) => {
       const userId = httpRequest.userId!;
       const { name } = httpRequest.body as PostWalletCreateBody;
 
+      const walletCount = await walletDAO.countAll(userId);
+
+      if (walletCount === 5) {
+        return {
+          statusCode: 400,
+          body: {
+            message: "You have reached the maximum number of wallets"
+          }
+        }
+      }
+
       const wallet = await walletDAO.create({
         name,
         userId
