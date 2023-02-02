@@ -5,6 +5,7 @@ import makeWalletEntriesList from "./makeWalletListEntries";
 import makeWalletCreate from "./makeWalletCreate";
 import makeWalletUpdate from "./makeWalletUpdate";
 import makeWalletRemove from "./makeWalletRemove";
+import makeWalletFind from "./makeWalletFind";
 
 const getWalletList = makeWalletList({
   walletDAO
@@ -13,6 +14,10 @@ const getWalletList = makeWalletList({
 const getWalletEntriesList = makeWalletEntriesList({
   walletDAO,
   entryDAO
+})
+
+const getWalletById = makeWalletFind({
+  walletDAO
 })
 
 const postWalletCreate = makeWalletCreate({
@@ -28,6 +33,7 @@ const deleteWalletRemove = makeWalletRemove({
 })
 
 export {
+  getWalletById,
   getWalletList,
   getWalletEntriesList,
   postWalletCreate,

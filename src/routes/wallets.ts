@@ -9,6 +9,7 @@ import { walletValidations } from '@models/wallet';
 const router = express.Router();
 
 router.get("/", middlewareAdapter(isAuthenticated), routeAdapter(walletsController.getAll))
+router.get("/:walletId", middlewareAdapter(isAuthenticated), routeAdapter(walletsController.find))
 router.get("/:walletId/entries", middlewareAdapter(isAuthenticated), routeAdapter(walletsController.getAllEntries))
 router.post("/",
   middlewareAdapter(isAuthenticated),
