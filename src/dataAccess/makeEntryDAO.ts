@@ -1,4 +1,5 @@
 import { Entry, PrismaClient } from "@prisma/client"
+import { Pagination } from "@utils/pagination"
 
 interface EntryCreate extends Omit<Entry, "id"|"createdAt"|"updatedAt"> {}
 
@@ -12,7 +13,9 @@ export interface EntryDAO {
   findOne(id: string): Promise<EntryObject|null>
   findOneOfUser(id: string, userId: string): Promise<EntryObject|null>
   findAll(userId: string): Promise<EntryObject[]>
+  findAllPaginated(userId: string, paginate: Pagination): Promise<EntryObject[]>
   findAllOfWallet(walletId: string): Promise<EntryObject[]>
+  count: (userId: string) => Promise<number>
   create(data: EntryCreate): Promise<EntryObject>
   update(id: string, data: EntryUpdate): Promise<EntryObject>
   remove(id: string): Promise<EntryObject>
@@ -64,12 +67,28 @@ export default (client: PrismaClient): EntryDAO => {
     return entries.map(parseEntry)
   }
 
+  async function findAllPaginated(userId: string, pagination: Pagination): Promise<EntryObject[]> {
+    const entries = await client.entry.findMany({
+      where: { userId },
+      skip: pagination.page * pagination.perPage,
+      take: pagination.perPage
+    })
+
+    return entries.map(parseEntry)
+  }
+
   async function findAllOfWallet(walletId: string): Promise<EntryObject[]> {
     const entries = await client.entry.findMany({
       where: { walletId }
     })
 
     return entries.map(parseEntry)
+  }
+
+  async function count(userId: string): Promise<number> {
+    return await client.entry.count({
+      where: { userId }
+    })
   }
 
   async function create(data: EntryCreate) {
@@ -101,7 +120,9 @@ export default (client: PrismaClient): EntryDAO => {
     findOne,
     findOneOfUser,
     findAll,
+    findAllPaginated,
     findAllOfWallet,
+    count,
     create,
     update,
     remove

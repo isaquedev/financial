@@ -6,17 +6,36 @@ interface MakeEntryListDependecies {
   entryDAO: EntryDAO
 }
 
+interface MakeEntryListQuery {
+  page: string
+  perPage: string
+}
+
 export default ({ entryDAO }: MakeEntryListDependecies) => {
   return async function getEntryList(httpRequest: HttpUserRequest): Promise<HttpResponse> {
     try {
       const userId = httpRequest.userId!;
+      const { page, perPage } = httpRequest.query as MakeEntryListQuery;
 
-      const entries = await entryDAO.findAll(userId);
+      const pagination = {
+        page: Number(page),
+        perPage: Number(perPage)
+      }
+
+      const entries = await entryDAO.findAllPaginated(userId, pagination);
+      const entriesLenght = await entryDAO.count(userId);
+
+      const nbPages = Math.ceil(entriesLenght / pagination.perPage);
       
       return {
         statusCode: 200,
         body: {
-          data: entries
+          data: entries,
+          pagination: {
+            page: pagination.page,
+            perPage: pagination.perPage,
+            nbPages: nbPages
+          }
         }
       }
     } catch (error: any) {
