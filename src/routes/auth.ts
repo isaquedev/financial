@@ -9,7 +9,7 @@ import { userValidations } from '@models/user'
 const router = express.Router();
 
 router.post("/login", validateRequestAdapter(validateRequest, userValidations.signInValidation), routeAdapter(authController.login))
-router.post("/register", routeAdapter(authController.register))
+router.post("/register", validateRequestAdapter(validateRequest, userValidations.signUpValidation), routeAdapter(authController.register))
 router.get("/whoami", middlewareAdapter(isAuthenticated), routeAdapter(authController.whoAmI))
 
 export default router

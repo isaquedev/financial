@@ -1,13 +1,9 @@
 import { HttpResponse } from "@adapters/routeAdapter";
 import { WalletDAO } from "@dataAccess/makeWalletDAO";
 import { HttpUserRequest } from "@middlewares/makeIsAuthenticated";
-import { WalletChangeValidation } from "@models/wallet";
-import { Validator } from "@validations/validator";
 
 interface MakeWalletUpdateDependecies {
   walletDAO: WalletDAO
-  validator: Validator
-  validationRules: WalletChangeValidation
 }
 
 interface PutWalletUpdateParams {
@@ -18,7 +14,7 @@ interface PutWalletUpdateBody {
   name: string
 }
 
-export default ({ walletDAO, validator, validationRules }: MakeWalletUpdateDependecies) => {
+export default ({ walletDAO }: MakeWalletUpdateDependecies) => {
   return async function putWalletUpdate(httpRequest: HttpUserRequest): Promise<HttpResponse> {
     try {
       const userId = httpRequest.userId!;
@@ -32,18 +28,6 @@ export default ({ walletDAO, validator, validationRules }: MakeWalletUpdateDepen
           statusCode: 404,
           body: {
             message: "Wallet not found"
-          }
-        }
-      }
-
-      const errors = validator<PutWalletUpdateBody>(httpRequest.body, validationRules)
-
-      if (errors) {
-        return {
-          statusCode: 400,
-          body: {
-            message: "Invalid request body",
-            error: errors
           }
         }
       }
