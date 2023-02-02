@@ -57,10 +57,12 @@ export default <T>(data: T, keys: Validation<T>): Errors | undefined => {
           if (isNaN(Date.parse(String(_data)))) {
             errors[key].push(`${name} is not a valid date`);
           }
+          break
         case 'enum':
           if (!keys[key as keyof T].enum?.includes(String(_data))) {
             errors[key].push(`${name} is not a valid`);
           }
+          break
         case 'integer':
           if (isNaN(Number(_data)) || !Number.isInteger(Number(_data))) {
             errors[key].push(`${name} is not a valid integer`);
